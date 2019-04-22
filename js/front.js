@@ -223,7 +223,7 @@ $(function () {
     $(".spinner").delay(2000).fadeIn(300);
   }, 1000);
 
-  setTimeout('InitPart1()', 5000);
+  setTimeout('InitPart1()', 3000);
 })
 
 function InitPart1() {
