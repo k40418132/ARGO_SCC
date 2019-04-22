@@ -207,7 +207,7 @@ $(function () {
   $(".square").css("top", $("#loading-mask h1").prop('offsetTop') - 80 + 'px');
   $(".spinner").css("top", $("#loading-mask h1").prop('offsetTop') + 70 + 'px');
   $(".squareLine").css("top", $("#loading-mask h1").prop('offsetTop') - 71 + 'px');
-  var offset = [[-50, -880], [-40, 240], [60, -4120], [-30, -2940], [30, 2100], [-170, 670], [100, -2150], [170, -2140], [-150, 1020], [160, -1740], [-270, -410], [-120, 2060]];
+  var offset = [[-50, -880], [-40, 350], [60, -4120], [-30, -2940], [30, 2100], [-170, 670], [100, -2150], [170, -2140], [-150, 1020], [160, -1740], [-270, -410], [-120, 2060]];
   var offsetTop = $("#loading-mask").prop('clientHeight') / 2;
   var offsetWidth = $("#loading-mask").prop('clientWidth') / 2;
   $(".stick").each(function (i) {
@@ -258,8 +258,7 @@ function InitPart1() {
     $(".Showed").each(function () { showCard(0, $(this).attr('id')) });
     showSearchPanel(false);
     $(".classList").removeClass("showList");
-    $(".mode-panel .fa-crosshairs").parent().click();
-
+    locationZoomIn(true);
   })
 
   $(".mode-panel .fa-route").parent().click(function () {
@@ -309,15 +308,10 @@ function InitPart1() {
   })
 
   $(".mode-panel .fa-crosshairs").parent().click(function () {
-    $("#flatmapContainer").css('transition', '.3s');
-    displayImageCurrentScale = 1;
-    updateRange();
-    displayImageCurrentX = clamp(displayDefaultWidth / 2 - userCoordinate.x, rangeMinX, rangeMaxX);
-    displayImageCurrentY = clamp(displayDefaultHeight / 2 - userCoordinate.y, rangeMinY, rangeMaxY);
-    updateDisplayImage(displayImageCurrentX, displayImageCurrentY, displayImageCurrentScale);
-    displayImageScale = displayImageCurrentScale;
-    displayImageX = displayImageCurrentX;
-    displayImageY = displayImageCurrentY;
+    if (Math.abs(userCoordinate.x) < displayDefaultWidth && Math.abs(userCoordinate.y) < displayDefaultHeight) {
+      $(this).hasClass("LOCK") ? $(this).removeClass("LOCK") : $(this).addClass("LOCK");
+      locationZoomIn();
+    } else showBubble("使用者不在範圍內");
   })
   $(".mode-panel .fa-map-marked-alt").parent().click(function () {
     showSearchPanel(false);
@@ -326,7 +320,7 @@ function InitPart1() {
     $('#flatmap').toggleClass('switchMode');
     $(".mode-panel").hasClass('switchMode') ? AR.hardware.camera.enabled = false : AR.hardware.camera.enabled = true;
     World.flatMode = !World.flatMode;
-    if (World.flatMode) setTimeout(function () { $(".mode-panel .fa-crosshairs").parent().click(); }, 800);
+    if (World.flatMode) setTimeout(function () { locationZoomIn(true) }, 800);
   })
   $(".btn-panel .fa-location-arrow").parent().click(function () {
     showBubble("已取消指引");
@@ -513,12 +507,25 @@ function Map_drawAllPoint() {
   }
 }
 
-
+function locationZoomIn(c) {
+  if ($(".mode-panel .fa-crosshairs").parent().hasClass("LOCK") || c) {
+    $("#flatmapContainer").css('transition', '.3s');
+    displayImageCurrentScale = 1;
+    updateRange();
+    displayImageCurrentX = clamp(displayDefaultWidth / 2 - userCoordinate.x, rangeMinX, rangeMaxX);
+    displayImageCurrentY = clamp(displayDefaultHeight / 2 - userCoordinate.y, rangeMinY, rangeMaxY);
+    updateDisplayImage(displayImageCurrentX, displayImageCurrentY, displayImageCurrentScale);
+    displayImageScale = displayImageCurrentScale;
+    displayImageX = displayImageCurrentX;
+    displayImageY = displayImageCurrentY;
+  }
+}
 
 function drawUserLocation(lat, lon) {
   var cood = Location2Pixel(lat, lon);
   $('#user-location').css('transform', 'translate(' + cood.x + 'px,' + cood.y + 'px)');
   userCoordinate = { "x": cood.x, "y": cood.y, "lat": lat, "lon": lon };
+  locationZoomIn();
 }
 
 function Location2Pixel(lat, lon) {
