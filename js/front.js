@@ -320,7 +320,9 @@ function InitPart1() {
     $('#flatmap').toggleClass('switchMode');
     $(".mode-panel").hasClass('switchMode') ? AR.hardware.camera.enabled = false : AR.hardware.camera.enabled = true;
     World.flatMode = !World.flatMode;
-    if (World.flatMode) setTimeout(function () { locationZoomIn(true) }, 800);
+    if (Math.abs(userCoordinate.x) < displayDefaultWidth && Math.abs(userCoordinate.y) < displayDefaultHeight) {
+      if (World.flatMode) setTimeout(function () { locationZoomIn(true) }, 800);
+    }
   })
   $(".btn-panel .fa-location-arrow").parent().click(function () {
     showBubble("已取消指引");
