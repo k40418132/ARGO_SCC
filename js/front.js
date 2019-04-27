@@ -286,21 +286,24 @@ function InitPart1() {
   });
 
   $(".mode-panel .fa-minus").parent().click(function () {
+    $("#flatmapContainer").css('transition', '.1s');
     displayImageCurrentScale = clampScale(displayImageScale - 0.1);
     updateRange();
-    displayImageCurrentX = clamp(displayImageX, rangeMinX, rangeMaxX);
-    displayImageCurrentY = clamp(displayImageY, rangeMinY, rangeMaxY);
+    displayImageCurrentX = clamp((displayDefaultWidth / 2 - userCoordinate.x) * displayImageCurrentScale, rangeMinX, rangeMaxX);
+    displayImageCurrentY = clamp((displayDefaultHeight / 2 - userCoordinate.y) * displayImageCurrentScale, rangeMinY, rangeMaxY);
     updateDisplayImage(displayImageCurrentX, displayImageCurrentY, displayImageCurrentScale);
     displayImageScale = displayImageCurrentScale;
     displayImageX = displayImageCurrentX;
     displayImageY = displayImageCurrentY;
+
   })
 
   $(".mode-panel .fa-plus").parent().click(function () {
+    $("#flatmapContainer").css('transition', '.1s');
     displayImageCurrentScale = clampScale(displayImageScale + 0.1);
     updateRange();
-    displayImageCurrentX = clamp(displayImageX, rangeMinX, rangeMaxX);
-    displayImageCurrentY = clamp(displayImageY, rangeMinY, rangeMaxY);
+    displayImageCurrentX = clamp((displayDefaultWidth / 2 - userCoordinate.x) * displayImageCurrentScale, rangeMinX, rangeMaxX);
+    displayImageCurrentY = clamp((displayDefaultHeight / 2 - userCoordinate.y) * displayImageCurrentScale, rangeMinY, rangeMaxY);
     updateDisplayImage(displayImageCurrentX, displayImageCurrentY, displayImageCurrentScale);
     displayImageScale = displayImageCurrentScale;
     displayImageX = displayImageCurrentX;
@@ -511,11 +514,9 @@ function Map_drawAllPoint() {
 
 function locationZoomIn(c) {
   if ($(".mode-panel .fa-crosshairs").parent().hasClass("LOCK") || c) {
-    $("#flatmapContainer").css('transition', '.3s');
-    displayImageCurrentScale = 1;
-    updateRange();
-    displayImageCurrentX = clamp(displayDefaultWidth / 2 - userCoordinate.x, rangeMinX, rangeMaxX);
-    displayImageCurrentY = clamp(displayDefaultHeight / 2 - userCoordinate.y, rangeMinY, rangeMaxY);
+    $("#flatmapContainer").css('transition', '.1s');
+    displayImageCurrentX = clamp((displayDefaultWidth / 2 - userCoordinate.x) * displayImageCurrentScale, rangeMinX, rangeMaxX);
+    displayImageCurrentY = clamp((displayDefaultHeight / 2 - userCoordinate.y) * displayImageCurrentScale, rangeMinY, rangeMaxY);
     updateDisplayImage(displayImageCurrentX, displayImageCurrentY, displayImageCurrentScale);
     displayImageScale = displayImageCurrentScale;
     displayImageX = displayImageCurrentX;
